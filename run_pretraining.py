@@ -184,7 +184,7 @@ def main():
             break
     logger.info(f"samples_per_epoch: {samples_per_epoch}")
     if args.local_rank == -1 or args.no_cuda:
-        device = torch.device(f"cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
+        device = torch.device(f"cuda" if torch.cuda.is_available() and not args.no_cuda else "mps")
         args.n_gpu = torch.cuda.device_count()
     else:
         torch.cuda.set_device(args.local_rank)

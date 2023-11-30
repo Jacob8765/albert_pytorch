@@ -1,0 +1,56 @@
+{
+    "os": "macOS-14.1.1-arm64-arm-64bit",
+    "python": "3.11.3",
+    "heartbeatAt": "2023-11-28T20:15:20.105562",
+    "startedAt": "2023-11-28T20:15:19.330156",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--model_type=albert",
+        "--model_name_or_path=/Users/jacob/Documents/albert_pytorch/scripts/../prev_trained_model/albert_base_v2",
+        "--task_name=sst-2",
+        "--do_train",
+        "--do_eval",
+        "--do_lower_case",
+        "--data_dir=/Users/jacob/Documents/albert_pytorch/scripts/../dataset/sst-2/",
+        "--max_seq_length=128",
+        "--per_gpu_train_batch_size=16",
+        "--per_gpu_eval_batch_size=8",
+        "--spm_model_file=/Users/jacob/Documents/albert_pytorch/scripts/../prev_trained_model/albert_base_v2/30k-clean.model",
+        "--learning_rate=1e-5",
+        "--num_train_epochs=3.0",
+        "--logging_steps=4210",
+        "--save_steps=4210",
+        "--output_dir=/Users/jacob/Documents/albert_pytorch/scripts/../outputs/sst-2_output/",
+        "--overwrite_output_dir",
+        "--seed=42"
+    ],
+    "state": "running",
+    "program": "/Users/jacob/Documents/albert_pytorch/scripts/../run_classifier.py",
+    "codePathLocal": null,
+    "codePath": "run_classifier.py",
+    "git": {
+        "remote": "https://github.com/lonePatient/albert_pytorch.git",
+        "commit": "46de9ec6b54f4901f78cf8c19696a16ad4f04dbc"
+    },
+    "email": "jschuster8765@gmail.com",
+    "root": "/Users/jacob/Documents/albert_pytorch",
+    "host": "Jacobs-MacBook-Pro-14.local",
+    "username": "jacob",
+    "executable": "/Users/jacob/Documents/albert_pytorch/venv/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "disk": {
+        "/": {
+            "total": 460.4317207336426,
+            "used": 9.21871566772461
+        }
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 16.0
+    }
+}

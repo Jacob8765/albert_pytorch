@@ -9,6 +9,10 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, TensorDataset
 from torch.utils.data.distributed import DistributedSampler
+import wandb
+import os
+
+wandb.init(project="albert_datamining_sst-2")
 
 from model.modeling_albert import AlbertConfig, AlbertForSequenceClassification
 # from model.modeling_albert_bright import AlbertConfig, AlbertForSequenceClassification # chinese version
@@ -76,6 +80,9 @@ def train(args, train_dataset, model, tokenizer):
                     torch.distributed.get_world_size() if args.local_rank != -1 else 1))
     logger.info("  Gradient Accumulation steps = %d", args.gradient_accumulation_steps)
     logger.info("  Total optimization steps = %d", num_training_steps)
+    
+    #initalize the wandb project with the learning rate, num epochs, and batch size
+    wandb.config.update(args)
 
     global_step = 0
     tr_loss, logging_loss = 0.0, 0.0
@@ -108,6 +115,9 @@ def train(args, train_dataset, model, tokenizer):
 
             tr_loss += loss.item()
             if (step + 1) % args.gradient_accumulation_steps == 0:
+                #log the average loss
+                wandb.log({'loss': loss.item()})
+
                 optimizer.step()
                 scheduler.step()  # Update learning rate schedule
                 model.zero_grad()
@@ -190,6 +200,8 @@ def evaluate(args, model, tokenizer, prefix=""):
         result = compute_metrics(eval_task, preds, out_label_ids)
         results.update(result)
         logger.info("***** Eval results {} *****".format(prefix))
+        wandb.log(result)
+
         for key in sorted(result.keys()):
             logger.info("  %s = %s", key, str(result[key]))
     return results
@@ -351,7 +363,7 @@ def main():
 
     # Setup CUDA, GPU & distributed training
     if args.local_rank == -1 or args.no_cuda:
-        device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
+        device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "mps")
         args.n_gpu = torch.cuda.device_count()
     else:  # Initializes the distributed backend which will take care of sychronizing nodes/GPUs
         torch.cuda.set_device(args.local_rank)
@@ -386,6 +398,10 @@ def main():
     model =AlbertForSequenceClassification.from_pretrained(args.model_name_or_path,
                                                            from_tf=bool('.ckpt' in args.model_name_or_path),
                                                             config=config)
+    
+    #load the parameters from the previous checkpoint
+    model.load_state_dict(torch.load(os.path.join(os.getcwd(), '../outputs/sst-2_output/albert/checkpoint-4210/pytorch_model.bin')))
+
     if args.local_rank == 0:
         torch.distributed.barrier()  # Make sure only the first process in distributed training will download model & vocab
     model.to(args.device)

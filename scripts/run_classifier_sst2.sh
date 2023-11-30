@@ -1,9 +1,9 @@
 CURRENT_DIR=`pwd`
-export BERT_BASE_DIR=$CURRENT_DIR/prev_trained_model/albert_large_v2
-export DATA_DIR=$CURRENT_DIR/dataset
-export OUTPUR_DIR=$CURRENT_DIR/outputs
+export BERT_BASE_DIR=$CURRENT_DIR/../prev_trained_model/albert_base_v2
+export DATA_DIR=$CURRENT_DIR/../dataset
+export OUTPUR_DIR=$CURRENT_DIR/../outputs
 TASK_NAME="sst-2"
-python run_classifier.py \
+python ../run_classifier.py \
   --model_type=albert \
   --model_name_or_path=$BERT_BASE_DIR \
   --task_name=$TASK_NAME \
